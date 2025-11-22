@@ -16,7 +16,7 @@ struct FeedView: View {
                     if activities.isEmpty {
                         VStack(spacing: 10) {
                             Image(systemName: "figure.run").font(.system(size: 50)).foregroundColor(.gray)
-                            Text("ยังไม่มีกิจกรรมการวิ่ง").foregroundColor(.gray)
+                            Text("No running activities yet").foregroundColor(.gray)
                         }
                         .padding(.top, 50)
                     } else {
@@ -30,7 +30,8 @@ struct FeedView: View {
                 }
                 .padding()
             }
-            .navigationTitle("Feed")
+            .background(AppColors.light)
+            .navigationTitle("For You")
             .navigationDestination(for: RunningActivity.self) { activity in
                 ActivityDetailView(activity: activity, currentUser: authManager.currentUser, activityManager: activityManager)
             }
@@ -69,6 +70,8 @@ struct ActivityCard: View {
     @State private var showDeleteAlert = false
     @State private var isDeleted = false
     
+    @State private var currentLikes: Int = 0
+    
     var body: some View {
         if isDeleted {
             EmptyView()
@@ -99,8 +102,16 @@ struct ActivityCard: View {
                     }
                     Spacer()
                     if let user = currentUser, user.id == activity.userId {
-                        Button(action: { showDeleteAlert = true }) {
-                            Image(systemName: "trash").foregroundColor(.red.opacity(0.7)).font(.system(size: 16))
+                        Menu {
+                            NavigationLink(value: activity){
+                                Text("Edit")
+                                Image(systemName: "pencil")
+                            }
+                            Button("Delete", systemImage: "trash"){
+                                showDeleteAlert = true
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis").foregroundColor(.gray).font(.system(size: 16))
                         }
                         .buttonStyle(BorderlessButtonStyle())
                     }
@@ -111,6 +122,7 @@ struct ActivityCard: View {
                     StatValue(label: "Pace", value: formatPace(activity.avgPace))
                     StatValue(label: "Time", value: formatDuration(activity.duration))
                 }
+                .frame(maxWidth: .infinity)
                 
                 if !activity.routePoints.isEmpty {
                     StaticMapView(routePoints: activity.routePoints)
@@ -118,8 +130,8 @@ struct ActivityCard: View {
                         .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.2), lineWidth: 1))
                         .allowsHitTesting(false)
                 } else {
-                    Rectangle().fill(Color.orange.opacity(0.1)).frame(height: 150).cornerRadius(8)
-                        .overlay(Image(systemName: "map.fill").foregroundColor(.orange))
+                    Rectangle().fill(AppColors.hotPink.opacity(0.1)).frame(height: 150).cornerRadius(8)
+                        .overlay(Image(systemName: "map.fill").foregroundColor(AppColors.hotPink))
                         .allowsHitTesting(false)
                 }
                 
@@ -130,8 +142,15 @@ struct ActivityCard: View {
                         guard let user = currentUser else { return }
                         activityManager.likeActivity(activity: activity, fromUser: user)
                         isLiked.toggle()
+                        if isLiked {
+                                currentLikes += 1
+                            } else {
+                                currentLikes -= 1
+                            }
                     }) {
-                        HStack { Image(systemName: isLiked ? "heart.fill" : "heart").foregroundColor(isLiked ? .red : .gray); Text("\(activity.likes)") }
+                        HStack { Image(systemName: isLiked ? "heart.fill" : "heart").foregroundColor(isLiked ? AppColors.hotPink : .gray); Text("\(currentLikes)")
+                                .foregroundStyle(isLiked ? AppColors.hotPink : .gray)
+                        }
                     }
                     .buttonStyle(BorderlessButtonStyle())
                     
@@ -149,10 +168,19 @@ struct ActivityCard: View {
                 }
             }
             .padding().background(Color.white).cornerRadius(12).shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
-            .alert("ยืนยันการลบ", isPresented: $showDeleteAlert) {
-                Button("ยกเลิก", role: .cancel) { }
-                Button("ลบ", role: .destructive) { deleteThisActivity() }
-            } message: { Text("คุณต้องการลบกิจกรรมนี้ใช่ไหม?") }
+            .alert("Confirm Delete", isPresented: $showDeleteAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) { deleteThisActivity() }
+            } message: { Text("Do you really want to delete this activity?") }
+                .onAppear {
+                        // กำหนดค่าเริ่มต้น
+                        self.currentLikes = activity.likes
+                        // ตรวจสอบสถานะไลค์เริ่มต้น (ถ้าคุณมีฟังก์ชัน isUserLikedActivity)
+                        // self.isLiked = activityManager.isUserLikedActivity(activity: activity, currentUser: currentUser)
+                    }
+                    .alert("Confirm Delete", isPresented: $showDeleteAlert) {
+                        // ...
+                    } message: { Text("Do you really want to delete this activity?") }
         }
     }
     
@@ -163,7 +191,7 @@ struct ActivityCard: View {
     }
     struct StatValue: View {
         let label: String; let value: String
-        var body: some View { VStack { Text(label).font(.caption).foregroundColor(.gray); Text(value).font(.headline).bold() } }
+        var body: some View { VStack { Text(label).font(.caption).foregroundColor(AppColors.dark); Text(value).font(.headline).bold() } }
     }
     func formatDuration(_ seconds: TimeInterval) -> String {
         let f = DateComponentsFormatter(); f.allowedUnits = [.hour, .minute, .second]; f.unitsStyle = .positional; f.zeroFormattingBehavior = .pad
@@ -173,4 +201,5 @@ struct ActivityCard: View {
         guard let p = pace, p > 0, !p.isInfinite else { return "--:--" }
         let m = Int(p); let s = Int((p - Double(m)) * 60); return String(format: "%d:%02d /km", m, s)
     }
+    
 }

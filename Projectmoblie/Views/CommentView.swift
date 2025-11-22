@@ -60,7 +60,7 @@ struct CommentView: View {
                 
                 Button(action: sendComment) {
                     Image(systemName: "paperplane.fill")
-                        .foregroundColor(.orange)
+                        .foregroundColor(AppColors.hotPink)
                         .font(.title2)
                 }
                 .disabled(newCommentText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

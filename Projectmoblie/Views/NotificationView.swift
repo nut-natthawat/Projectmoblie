@@ -22,7 +22,7 @@ struct NotificationView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(notif.fromUsername)
                         .font(.headline)
-                    + Text(" \(notif.type == .like ? "ถูกใจการวิ่งของคุณ" : "แสดงความคิดเห็นในการวิ่งของคุณ")")
+                    + Text(" \(notif.type == .like ? "Liked your post" : "Commented on your post")")
                         .font(.body)
                         .foregroundColor(.primary)
                     
@@ -35,7 +35,7 @@ struct NotificationView: View {
                 
                 // โชว์จุดเล็กๆ ท้ายรายการ ถ้าอันนี้ยังไม่ได้อ่าน (Option เสริม)
                 if !notif.isRead {
-                    Circle().fill(Color.orange).frame(width: 8, height: 8)
+                    Circle().fill(AppColors.hotPink).frame(width: 8, height: 8)
                 }
             }
             .padding(.vertical, 5)
@@ -56,7 +56,8 @@ struct NotificationView: View {
         }
         .overlay {
             if notifications.isEmpty {
-                ContentUnavailableView("ยังไม่มีการแจ้งเตือน", systemImage: "bell.slash", description: Text("เมื่อมีคนถูกใจหรือคอมเมนต์ จะแสดงที่นี่"))
+                ContentUnavailableView("No notifications yet", systemImage: "bell.slash", description: Text("Show when someone is liking or commenting on your posts"))
+                    .padding()
             }
         }
     }

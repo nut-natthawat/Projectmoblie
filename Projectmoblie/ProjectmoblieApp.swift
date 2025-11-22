@@ -30,6 +30,7 @@ struct ProjectmoblieApp: App {
             // ส่ง authManager ไปให้ View อื่นๆ ใช้
             ContentView()
                 .environmentObject(authManager)
+            
         }
     }
 }

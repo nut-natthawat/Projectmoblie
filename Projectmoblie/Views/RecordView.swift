@@ -39,8 +39,8 @@ struct RecordView: View {
                             Text("START")
                                 .font(.title2).bold()
                                 .frame(width: 100, height: 100)
-                                .background(Color.orange)
-                                .foregroundColor(.white)
+                                .background(AppColors.hotPink)
+                                .foregroundColor(AppColors.light)
                                 .clipShape(Circle())
                                 .shadow(radius: 10)
                         }
@@ -196,7 +196,7 @@ struct RunSummaryView: View {
     
     var body: some View {
         VStack(spacing: 20) {
-            Text("สรุปผลการวิ่ง")
+            Text("Running Result")
                 .font(.title)
                 .bold()
                 .padding(.top)
@@ -226,12 +226,12 @@ struct RunSummaryView: View {
             Spacer()
             
             Button(action: onDismiss) {
-                Text("เสร็จสิ้น")
+                Text("Success")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
+                    .background(AppColors.hotPink)
+                    .foregroundColor(AppColors.light)
                     .cornerRadius(12)
             }
             .padding(.horizontal)

@@ -8,12 +8,13 @@ struct ActivityDetailView: View {
     let currentUser: UserProfile?
     @ObservedObject var activityManager: ActivityManager
     
+    @Environment(\.dismiss) var dismiss
+    
     @State private var comments: [Comment] = []
     @State private var newCommentText = ""
     @State private var listener: ListenerRegistration?
     
-    @State private var noteText: String = ""
-    @State private var isEditingNote = false
+    @State private var showDeleteActivityAlert = false
     
     var body: some View {
         ScrollView {
@@ -23,7 +24,7 @@ struct ActivityDetailView: View {
                     MapView(userLocation: nil, routeCoordinates: activity.routePoints.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
                         .frame(height: 350)
                 } else {
-                    Rectangle().fill(Color.orange.opacity(0.1)).frame(height: 250).overlay(Text("No Map Data").foregroundColor(.gray))
+                    Rectangle().fill(AppColors.hotPink.opacity(0.1)).frame(height: 250).overlay(Text("No Map Data").foregroundColor(.gray))
                 }
                 
                 VStack(alignment: .leading, spacing: 20) {
@@ -51,37 +52,7 @@ struct ActivityDetailView: View {
                         }
                         Spacer()
                     }
-                    
-                    // 3. NOTE
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Run Description").font(.headline)
-                            Spacer()
-                            if let user = currentUser, user.id == activity.userId {
-                                Button(action: { isEditingNote.toggle() }) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: isEditingNote ? "checkmark.circle.fill" : "pencil.circle.fill")
-                                        Text(isEditingNote ? "Done" : "Edit")
-                                    }
-                                    .font(.subheadline).foregroundColor(.orange)
-                                }
-                            }
-                        }
-                        
-                        if isEditingNote {
-                            TextField("Add a note...", text: $noteText, axis: .vertical)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                            Button("Save Note") {
-                                activityManager.updateActivityNote(activity: activity, note: noteText)
-                                isEditingNote = false
-                            }
-                            .buttonStyle(.borderedProminent).tint(.orange).padding(.top, 5)
-                        } else {
-                            Text(noteText.isEmpty ? "No description provided." : noteText)
-                                .font(.body).foregroundColor(noteText.isEmpty ? .gray : .primary).padding(.vertical, 4)
-                        }
-                    }
-                    .padding().background(Color.gray.opacity(0.05)).cornerRadius(10)
+                    .padding(.bottom, 10)
                     
                     // 4. STATS
                     HStack(spacing: 20) {
@@ -101,7 +72,7 @@ struct ActivityDetailView: View {
                                         x: .value("KM", index + 1),
                                         y: .value("Pace", splitSeconds / 60.0)
                                     )
-                                    .foregroundStyle(.orange).cornerRadius(4)
+                                    .foregroundStyle(AppColors.hotPink).cornerRadius(4)
                                 }
                             }
                             .frame(height: 200).chartYAxisLabel("Minutes / KM").padding().background(Color.white).cornerRadius(10).shadow(color: Color.black.opacity(0.05), radius: 5)
@@ -134,7 +105,7 @@ struct ActivityDetailView: View {
                         
                         HStack {
                             TextField("Write a comment...", text: $newCommentText).textFieldStyle(RoundedBorderTextFieldStyle())
-                            Button(action: sendComment) { Image(systemName: "paperplane.fill").foregroundColor(.orange) }.disabled(newCommentText.isEmpty)
+                            Button(action: sendComment) { Image(systemName: "paperplane.fill").foregroundColor(AppColors.hotPink) }.disabled(newCommentText.isEmpty)
                         }
                         .padding(.top, 5)
                     }
@@ -143,13 +114,32 @@ struct ActivityDetailView: View {
             }
         }
         .navigationTitle("Activity Detail")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            noteText = activity.note ?? ""
-            listener = activityManager.listenToComments(activityId: activity.id ?? "") { self.comments = $0 }
-        }
-        .onDisappear { listener?.remove() }
-    }
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                listener = activityManager.listenToComments(activityId: activity.id ?? "") { self.comments = $0 }
+            }
+            .onDisappear { listener?.remove() }
+
+            // 2. Toolbar และ Alert
+            .toolbar {
+                if let user = currentUser, user.id == activity.userId {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(role: .destructive, action: {
+                            showDeleteActivityAlert = true // แก้เป็นชื่อตัวแปรที่ถูกต้อง
+                        }) {
+                            Image(systemName: "trash")
+                        }
+                    }
+                }
+            }
+            .alert("Confirm Delete", isPresented: $showDeleteActivityAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) { deleteAndDismiss() }
+            } message: {
+                Text("Do you really want to delete this activity?")
+            }
+        } // ⬇️ ปิด body
+    
     
     func sendComment() {
         guard let user = currentUser, let activityId = activity.id else { return }
@@ -168,6 +158,17 @@ struct ActivityDetailView: View {
     func formatPace(_ pace: Double?) -> String {
         guard let p = pace, p > 0, !p.isInfinite else { return "--:--" }
         let m = Int(p); let s = Int((p - Double(m)) * 60); return String(format: "%d:%02d /km", m, s)
+    }
+    func deleteAndDismiss() {
+        activityManager.deleteActivity(activity: activity) { success in
+            if success {
+                // ปิด ActivityDetailView เมื่อลบสำเร็จ
+                dismiss()
+            } else {
+                print("Error: Could not delete activity.")
+                // คุณอาจเพิ่ม logic สำหรับแสดงข้อผิดพลาด (Error Message) ที่นี่
+            }
+        }
     }
 }
 

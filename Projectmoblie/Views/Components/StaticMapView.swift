@@ -46,7 +46,8 @@ struct StaticMapView: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let polyline = overlay as? MKPolyline {
                 let renderer = MKPolylineRenderer(polyline: polyline)
-                renderer.strokeColor = .orange // สีส้ม Strava
+                let navyColor = AppColors.hotPink
+                renderer.strokeColor = UIColor(navyColor)
                 renderer.lineWidth = 3
                 return renderer
             }
