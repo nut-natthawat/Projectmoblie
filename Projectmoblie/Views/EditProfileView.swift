@@ -112,7 +112,6 @@ struct EditProfileView: View {
     }
 }
 
-
 #Preview {
     EditProfileView(currentUsername: "TestUser", currentBio: "Love Running!", currentImageBase64: nil)
         .environmentObject(AuthManager())
