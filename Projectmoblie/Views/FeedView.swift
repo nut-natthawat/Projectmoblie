@@ -78,7 +78,6 @@ struct ActivityCard: View {
         } else {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    // 🔥 [UPDATED] ส่วนแสดงรูปโปรไฟล์
                     if let base64 = activity.userProfileImageBase64,
                        let data = Data(base64Encoded: base64),
                        let uiImage = UIImage(data: data) {
@@ -89,7 +88,6 @@ struct ActivityCard: View {
                             .clipShape(Circle())
                             .overlay(Circle().stroke(Color.gray.opacity(0.2), lineWidth: 1))
                     } else {
-                        // รูป Placeholder เดิม
                         Circle()
                             .fill(Color.gray.opacity(0.3))
                             .frame(width: 40, height: 40)
@@ -173,13 +171,9 @@ struct ActivityCard: View {
                 Button("Delete", role: .destructive) { deleteThisActivity() }
             } message: { Text("Do you really want to delete this activity?") }
                 .onAppear {
-                        // กำหนดค่าเริ่มต้น
                         self.currentLikes = activity.likes
-                        // ตรวจสอบสถานะไลค์เริ่มต้น (ถ้าคุณมีฟังก์ชัน isUserLikedActivity)
-                        // self.isLiked = activityManager.isUserLikedActivity(activity: activity, currentUser: currentUser)
                     }
                     .alert("Confirm Delete", isPresented: $showDeleteAlert) {
-                        // ...
                     } message: { Text("Do you really want to delete this activity?") }
         }
     }

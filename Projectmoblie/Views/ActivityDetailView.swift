@@ -19,7 +19,6 @@ struct ActivityDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // 1. MAP
                 if !activity.routePoints.isEmpty {
                     MapView(userLocation: nil, routeCoordinates: activity.routePoints.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
                         .frame(height: 350)
@@ -28,7 +27,6 @@ struct ActivityDetailView: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 20) {
-                    // 2. HEADER (🔥 UPDATED)
                     HStack {
                         if let base64 = activity.userProfileImageBase64,
                            let data = Data(base64Encoded: base64),
@@ -54,7 +52,6 @@ struct ActivityDetailView: View {
                     }
                     .padding(.bottom, 10)
                     
-                    // 4. STATS
                     HStack(spacing: 20) {
                         DetailStat(label: "Distance", value: String(format: "%.2f km", activity.distance))
                         DetailStat(label: "Pace", value: formatPace(activity.avgPace))
@@ -62,7 +59,6 @@ struct ActivityDetailView: View {
                     }
                     .padding(.vertical)
                     
-                    // 5. SPLITS CHART
                     if !activity.splits.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Splits (Pace per KM)").font(.headline)
@@ -82,7 +78,6 @@ struct ActivityDetailView: View {
                     
                     Divider()
                     
-                    // 6. COMMENTS
                     VStack(alignment: .leading, spacing: 15) {
                         Text("Comments").font(.headline)
                         
@@ -120,12 +115,11 @@ struct ActivityDetailView: View {
             }
             .onDisappear { listener?.remove() }
 
-            // 2. Toolbar และ Alert
             .toolbar {
                 if let user = currentUser, user.id == activity.userId {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(role: .destructive, action: {
-                            showDeleteActivityAlert = true // แก้เป็นชื่อตัวแปรที่ถูกต้อง
+                            showDeleteActivityAlert = true
                         }) {
                             Image(systemName: "trash")
                         }
@@ -138,7 +132,7 @@ struct ActivityDetailView: View {
             } message: {
                 Text("Do you really want to delete this activity?")
             }
-        } // ⬇️ ปิด body
+        }
     
     
     func sendComment() {
@@ -162,11 +156,9 @@ struct ActivityDetailView: View {
     func deleteAndDismiss() {
         activityManager.deleteActivity(activity: activity) { success in
             if success {
-                // ปิด ActivityDetailView เมื่อลบสำเร็จ
                 dismiss()
             } else {
                 print("Error: Could not delete activity.")
-                // คุณอาจเพิ่ม logic สำหรับแสดงข้อผิดพลาด (Error Message) ที่นี่
             }
         }
     }

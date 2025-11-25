@@ -15,9 +15,22 @@
 		0D1C46E12ECDCF87007C1BA2 /* Projectmoblie.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Projectmoblie.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0DBE407C2ED5856A002AF10E /* Exceptions for "Projectmoblie" folder in "Projectmoblie" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 0D1C46E02ECDCF87007C1BA2 /* Projectmoblie */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0D1C473A2ECDEB8C007C1BA2 /* Projectmoblie */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0DBE407C2ED5856A002AF10E /* Exceptions for "Projectmoblie" folder in "Projectmoblie" target */,
+			);
 			path = Projectmoblie;
 			sourceTree = "<group>";
 		};
@@ -263,8 +276,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2TRM39Y6N3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Projectmoblie/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ขอใช้ gps หน่อยนะจ้ะ  จุ้บๆ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -291,8 +306,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2TRM39Y6N3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Projectmoblie/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "ขอใช้ gps หน่อยนะจ้ะ  จุ้บๆ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

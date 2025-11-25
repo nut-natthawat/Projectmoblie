@@ -4,7 +4,6 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseFirestore
 
-// MARK: - 1. DATA MODELS
 struct UserProfile: Codable, Identifiable {
     var id: String
     var username: String
@@ -12,7 +11,6 @@ struct UserProfile: Codable, Identifiable {
     var totalDistance: Double
     var joinDate: Date
     var bio: String?
-    // เก็บรูปโปรไฟล์แบบ Text (Base64)
     var profileImageBase64: String?
 }
 
@@ -41,8 +39,6 @@ struct RunningActivity: Codable, Identifiable, Hashable, Equatable {
     var avgPace: Double?
     var note: String?
     var splits: [Double] = []
-    
-    // 🔥 [NEW] เก็บรูปโปรไฟล์ของคนวิ่งไว้ในกิจกรรมด้วย (Snapshot)
     var userProfileImageBase64: String?
     
     static func == (lhs: RunningActivity, rhs: RunningActivity) -> Bool {
@@ -69,7 +65,6 @@ struct NotificationItem: Codable, Identifiable {
     var isRead: Bool = false
 }
 
-// MARK: - 2. MANAGERS
 class AuthManager: ObservableObject {
     @Published var currentUser: UserProfile?
     private let db = Firestore.firestore()

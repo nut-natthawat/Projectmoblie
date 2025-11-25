@@ -156,7 +156,6 @@ struct RecordView: View {
             timestamp: Date(),
             avgPace: finalAvgPace,
             splits: splits,
-            // 🔥 [NEW] แนบรูปโปรไฟล์ปัจจุบันของ User ไปด้วย
             userProfileImageBase64: user.profileImageBase64
         )
         
@@ -189,7 +188,6 @@ struct RecordView: View {
     }
 }
 
-// RunSummaryView (เหมือนเดิม)
 struct RunSummaryView: View {
     let activity: RunningActivity
     var onDismiss: () -> Void

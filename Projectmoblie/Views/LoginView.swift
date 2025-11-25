@@ -16,15 +16,14 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            //            AppColors.light.ignoresSafeArea()
             AppColors.white.ignoresSafeArea()
             Group {
                 Circle()
                     .fill(AppColors.hotPink)
                     .frame(width: 250, height: 250)
                     .offset(x: 150, y: -400)
-                    .blur(radius: 100) // ทำให้เบลอ
-                    .opacity(0.5) // โปร่งแสง
+                    .blur(radius: 100)
+                    .opacity(0.5)
                 
                 Circle()
                     .fill(AppColors.hotPink)
@@ -110,14 +109,13 @@ struct LoginView: View {
                                 Image(systemName: isPasswordVisible ? "eye.slash.fill" : "eye.fill")
                                     .foregroundColor(.gray)
                             }
-                            .padding(.trailing, 8) // ขยับปุ่มเข้ามานิดนึง
+                            .padding(.trailing, 8)
                         }
                     }
                     }
                     
                 .padding(.horizontal)
                 
-                // ปุ่ม Login
                 Button(action: {
                     authManager.login(email: email, password: password) { result in
                         switch result {
@@ -139,7 +137,6 @@ struct LoginView: View {
                 }
                 .padding(.horizontal)
                 
-                // ปุ่มไปหน้า Register
                 HStack{
                     Text("Do not have any account?")
                         .bold()

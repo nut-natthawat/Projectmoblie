@@ -13,15 +13,14 @@ struct RegisterView: View {
 
     var body: some View {
         ZStack {
-//            AppColors.light.ignoresSafeArea()
             AppColors.white.ignoresSafeArea()
             Group {
                 Circle()
                     .fill(AppColors.hotPink)
                     .frame(width: 250, height: 250)
-                    .offset(x: 150, y: -400) // เลื่อนตำแหน่ง
-                    .blur(radius: 100) // ทำให้เบลอ
-                    .opacity(0.5) // โปร่งแสง
+                    .offset(x: 150, y: -400)
+                    .blur(radius: 100)
+                    .opacity(0.5)
                 
                 Circle()
                     .fill(AppColors.hotPink)
@@ -107,12 +106,10 @@ struct RegisterView: View {
                 .padding(.horizontal)
                 
                 Button(action: {
-                    // เรียกฟังก์ชัน register จาก AuthManager
                     authManager.register(email: email, password: password, username: username) { result in
                         switch result {
                         case .success(_):
                             print("Resgister Success!")
-                            // ไม่ต้องทำอะไร เดี๋ยว ContentView จะเปลี่ยนหน้าให้เองเมื่อ currentUser เปลี่ยน
                         case .failure(let error):
                             errorMessage = error.localizedDescription
                             showError = true

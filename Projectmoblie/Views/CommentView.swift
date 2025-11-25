@@ -5,15 +5,6 @@ struct CommentView: View {
     let activityId: String
     @EnvironmentObject var authManager: AuthManager
     @StateObject var activityManager = ActivityManager()
-    
-    // 🔥 [NEW] รับค่า Owner Id เพื่อรู้ว่าจะส่ง Notification หาใคร
-    // (จริงๆ ควรแก้ให้รับ Model Activity มาเลย แต่เพื่อให้แก้โค้ดน้อยที่สุด เราจะ query เอาหรือปล่อยให้ Backend จัดการ)
-    // เพื่อความง่ายใน MVP เราจะสมมติว่าเราหา ownerId ได้ หรือรับมา
-    // แต่ใน RunningServices เราแก้ให้รับ ownerId แล้ว ดังนั้นต้องแก้ตรงนี้ให้ส่งไป
-    
-    // วิธีแก้ที่ดีที่สุดคือรับ RunningActivity มาแทน activityId string
-    // แต่เพื่อให้ง่ายต่อโค้ดเดิม ผมจะใช้วิธี Fetch ownerId ของ activity นี้ก่อนส่ง
-    
     @State private var comments: [Comment] = []
     @State private var newCommentText = ""
     @State private var listener: ListenerRegistration?
@@ -84,9 +75,6 @@ struct CommentView: View {
         guard let user = authManager.currentUser else { return }
         let text = newCommentText
         newCommentText = ""
-        
-        // 🔥 ต้อง Fetch activity เพื่อเอา ownerId ก่อน (วิธีแบบ hack เร็วๆ)
-        // ใน Production ควรรับ activity model มาตั้งแต่ต้น
         Firestore.firestore().collection("activities").document(activityId).getDocument { snapshot, error in
             guard let data = snapshot?.data(),
                   let ownerId = data["userId"] as? String else { return }

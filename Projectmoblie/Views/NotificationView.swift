@@ -33,7 +33,6 @@ struct NotificationView: View {
                 
                 Spacer()
                 
-                // โชว์จุดเล็กๆ ท้ายรายการ ถ้าอันนี้ยังไม่ได้อ่าน (Option เสริม)
                 if !notif.isRead {
                     Circle().fill(AppColors.hotPink).frame(width: 8, height: 8)
                 }
@@ -48,7 +47,6 @@ struct NotificationView: View {
                 self.notifications = fetchedNotifs
             }
             
-            // 🔥 เปิดหน้านี้ปุ๊บ สั่งให้ Mark as Read ทันที เพื่อเคลียร์จุดแดงที่หน้า Feed
             activityManager.markAllNotificationsAsRead(userId: userId)
         }
         .onDisappear {
